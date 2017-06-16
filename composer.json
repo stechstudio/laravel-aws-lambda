@@ -1,0 +1,10 @@
+{
+    "name": "bubba/laravel-aws-lambda",
+    "authors": [
+        {
+            "name": "Bubba",
+            "email": "rob@hines57.com"
+        }
+    ],
+    "require": {}
+}
