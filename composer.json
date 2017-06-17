@@ -1,10 +1,43 @@
 {
-    "name": "bubba/laravel-aws-lambda",
+    "name": "stechstudio/laravel-aws-lambda",
+    "description": "",
+    "keywords": ["laravel", "lumen", "aws"],
+    "homepage": "https://stechstudio.com/",
+    "type": "library",
     "authors": [
         {
             "name": "Bubba",
-            "email": "rob@hines57.com"
+            "email": "bubba@stechstdio.com",
+            "homepage": "https://github.com/bubba-h57"
         }
     ],
-    "require": {}
+    "support": {
+        "issues": "https://github.com/stechstudio/laravel-aws-lambda/issues"
+    },
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "5.4.x",
+        "nelexa/zip": "^3.0"
+    },
+    "require-dev": {
+    },
+    "config": {
+        "platform": {
+            "php": "7.1.5"
+        }
+    },
+    "suggest": {
+        "ext-zip": "Enabling the zip extension allows you to unzip archives",
+        "ext-zlib": "Allow gzip compression of HTTP requests",
+        "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages"
+    },
+    "autoload": {
+        "psr-4": { "STS\\Serverless\\": "src/Serverless" }
+    },
+    "autoload-dev": {
+        "psr-4": { "STS\\Test\\": "tests/Serverless/Test" }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
 }
