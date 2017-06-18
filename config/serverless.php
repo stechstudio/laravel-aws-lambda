@@ -9,7 +9,8 @@ return [
                 '.idea',
                 '.git',
                 'resources/lib/php',
-                'resources/lib/pkgconfig'
+                'resources/lib/pkgconfig',
+                'resources/dist'
             ],
             'files' => [
                 '.gitignore',
