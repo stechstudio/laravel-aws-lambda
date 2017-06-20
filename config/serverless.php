@@ -20,7 +20,9 @@ return [
                 '.htaccess',
                 'readme.md',
                 'versions.json',
-                '.php_cs.cache'
+                '.php_cs.cache',
+                'composer.json',
+                'composer.lock'
             ]
         ]
     ],
