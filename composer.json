@@ -17,7 +17,7 @@
     "require": {
         "php": ">=7.1.0",
         "illuminate/support": "5.4.x",
-        "bubba-h57/zip": "3.0.2",
+        "nelexa/zip": "^3.0",
         "Illuminate/Console": "^5.4",
         "illuminate/filesystem": "^5.4",
         "symfony/process": "^3.3",
