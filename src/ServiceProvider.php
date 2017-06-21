@@ -9,7 +9,6 @@ use STS\Serverless\Console\Test;
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     protected $commandList = [
-        Test::class,
         Install::class,
         Package::class
     ];
