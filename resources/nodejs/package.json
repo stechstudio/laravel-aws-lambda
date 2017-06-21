@@ -7,7 +7,9 @@
     "http-string-parser": "0.0.6"
   },
   "devDependencies": {
-    "eslint": "^4.0.0"
+    "eslint": "^4.0.0",
+    "grunt": "^1.0.1",
+    "grunt-aws-lambda": "^0.13.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
