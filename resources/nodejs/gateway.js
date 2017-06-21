@@ -2,6 +2,7 @@
 
 const spawn = require("child_process").spawnSync;
 const parser = require("http-string-parser");
+var path = require("path");
 
 exports.handler = function(event, context) {
     // Sets some sane defaults here so that this function doesn't fail
@@ -32,11 +33,12 @@ exports.handler = function(event, context) {
     }
 
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
-    let php = spawn('../bin/php-cgi', ['../../public/index.php'], {
+    let scriptPath = path.resolve('../../public/index.php')
+    let php = spawn('php-cgi', ['-f', scriptPath], {
         env: Object.assign({
             REDIRECT_STATUS: 200,
             REQUEST_METHOD: requestMethod,
-            SCRIPT_FILENAME: '../../public/index.php',
+            SCRIPT_FILENAME: scriptPath,
             SCRIPT_NAME: '/index.php',
             PATH_INFO: '/',
             SERVER_NAME: serverName,
