@@ -24,6 +24,9 @@ return [
                 'composer.json',
                 'composer.lock'
             ]
+        ],
+        'executables' => [
+            'resources/bin/php-cgi'
         ]
     ],
     'install' => [
