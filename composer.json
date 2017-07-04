@@ -1,0 +1,53 @@
+{
+    "name": "stechstudio/laravel-aws-lambda",
+    "version": "0.0.1",
+    "description": "Allows php to respond to http requests on aws lambda",
+    "keywords": ["laravel", "lumen", "aws", "php", "lambda"],
+    "homepage": "https://stechstudio.com/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bubba",
+            "email": "bubba@stechstdio.com",
+            "homepage": "https://github.com/bubba-h57"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/stechstudio/laravel-aws-lambda/issues"
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "illuminate/support": "^5.4",
+        "Illuminate/Console": "^5.4",
+        "illuminate/filesystem": "^5.4",
+        "illuminate/http": "^5.4",
+        "symfony/process": "^3.3",
+        "Illuminate/Pipeline": "^5.4",
+        "gisostallenberg/file-permission-calculator": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "symfony/var-dumper": "^3.3",
+        "composer/composer": "^1.4"
+    },
+    "config": {
+        "platform": {
+            "php": "7.1.6"
+        }
+    },
+    "suggest": {
+        "ext-zip": "Enabling the zip extension allows you to unzip archives",
+        "ext-zlib": "Allow gzip compression of HTTP requests",
+        "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages"
+    },
+    "autoload": {
+        "psr-4": { "STS\\Serverless\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "STS\\Test\\": "tests/" }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
