@@ -53,6 +53,16 @@ class Archive
                 $this->setPermissions($entryName, $data->get('permissions'));
             }
         );
+        $this->reset();
+        return $this;
+    }
+
+    /**
+     * Close and reopen archive to ensure we release file descriptors
+     * @return Archive
+     */
+    public function reset(): Archive
+    {
         $this->close();
         $this->open();
         return $this;
