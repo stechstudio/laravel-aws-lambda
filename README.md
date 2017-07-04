@@ -38,6 +38,11 @@ to the `providers` array in `config/app.php`.
 
 ## Configuration
 // @todo Actually fill this in.
+`artisan aws-lambda:install` - Copy all the PHP executable, libraries, and node.js stuff into place.
+`artisan aws-lambda:package` - Creates a zip archive that can be uploaded to AWS Lambda.
 
 ## Use It
 // @todo Actually fill this in.
+Local test with [lambda-local](https://www.npmjs.com/package/lambda-local) if you have installed it.
+
+`lambda-local -l resources/nodejs/gateway.js -h handler -e resources/nodejs/event-samples/test-data.js` 
