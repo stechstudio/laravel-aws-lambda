@@ -23,46 +23,34 @@ class Package extends Command
      */
     protected $description = 'Package (zip) the application in preparation for deployment.';
 
+    /**
+     * Command Entry Point
+     * @return int  The exit code for the command
+     */
     public function handle(): int
     {
         $archiveName = $this->generateArchiveName();
-        $this->info('Creating Archive ' . $archiveName);
+        $this->info('Creating Archive');
         $package = new Archive(base_path($archiveName));
 
-        $this->info('Generating Project Files List');
-        $projectFileList = $this->generateProjectFileList(base_path());
-        $this->info('Generating Vendor Files List');
+        $this->info("\tGenerating Project Files List");
+        $projectFileList = $this->getFileCollection(base_path());
+        $this->info("\tGenerating Vendor Files List");
         $vendorFileList = $this->collectComposerLibraries();
 
-        $this->info('Adding Files to Archive');
+        $this->info("\tAdding Files to Archive");
         $package->addCollection($projectFileList)->addCollection($vendorFileList)->close();
 
-        $this->info('Created Distribution Package:');
+        $this->info("\tCreated Distribution Package:");
         $this->warn("\tresources/dist/".$archiveName);
         return (0);
     }
 
-
-
     /**
-     * @return array
-     */
-    protected function generateIgnorePatterns(): array
-    {
-        $ignoreList = [];
-
-        foreach (config('serverless.packaging.ignore.directories') as $pattern) {
-            $ignoreList[] = base_path($pattern);
-        }
-
-        return array_merge($ignoreList, config('serverless.packaging.ignore.files'));
-    }
-
-
-    /**
+     * Works from a base directory and add all files that are not blacklisted.
      * @return Collection
      */
-    protected function generateProjectFileList(string $basePath) : Collection
+    protected function getFileCollection(string $basePath) : Collection
     {
         $fileList = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($basePath, \FilesystemIterator::SKIP_DOTS),
@@ -73,7 +61,7 @@ class Package extends Command
 
         $contents = $contents->reject(
             function ($fileInfo, $path) {
-                foreach ($this->generateIgnorePatterns() as $pattern) {
+                foreach (config('serverless.packaging.ignore') as $pattern) {
                     // Try directory path matching first
                     $result = strpos($fileInfo->getPathInfo(), $pattern);
                     if ($result !== false) {
@@ -84,9 +72,7 @@ class Package extends Command
                         return true;
                     }
                 }
-                // Finally, get rid of directories.
                 return false;
-                return $fileInfo->isDir()   ;
             }
         )->mapWithKeys(
             function (\SplFileInfo $fileInfo, $path) use ($basePath) {
@@ -123,7 +109,7 @@ class Package extends Command
         $process->setWorkingDirectory($tmpDir);
         $process->run();
 
-        return $this->generateProjectFileList($tmpDir);
+        return $this->getFileCollection($tmpDir);
     }
 
     /**
