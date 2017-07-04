@@ -60,6 +60,7 @@ class Package extends Command
         $contents = collect(iterator_to_array($fileList));
 
         $contents = $contents->reject(
+            /** Reject anything in our ignore list */
             function ($fileInfo, $path) {
                 foreach (config('serverless.packaging.ignore') as $pattern) {
                     // Try directory path matching first
