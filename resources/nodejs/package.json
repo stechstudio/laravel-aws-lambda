@@ -1,0 +1,33 @@
+{
+  "name": "laravel-aws-lambda",
+  "version": "0.0.1",
+  "description": "Allows php to respond to http requests on aws lambda.",
+  "main": "gateway.js",
+  "author": "Bubba Hines",
+  "license": "MIT",
+  "contributors": [
+    "Bubba <bubba@stechstdio.com>"
+  ],
+  "dependencies": {
+    "http-string-parser": "0.0.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stechstudio/laravel-aws-lambda.git"
+  },
+  "keywords": [
+    "laravel",
+    "lumen",
+    "php",
+    "lambda",
+    "aws"
+  ],
+  "bugs": {
+    "url": "https://github.com/stechstudio/laravel-aws-lambda/issues"
+  },
+  "homepage": "https://github.com/stechstudio/laravel-aws-lambda"
+}
