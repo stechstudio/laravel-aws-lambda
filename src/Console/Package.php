@@ -29,8 +29,8 @@ class Package extends Command
      */
     public function handle(): int
     {
-        $archiveName = $this->generateArchiveName();
         $this->info('Creating Archive');
+        $archiveName = $this->generateArchiveName();
         $package = new Archive(base_path($archiveName));
 
         $this->info("\tGenerating Project Files List");
@@ -57,55 +57,89 @@ class Package extends Command
             \RecursiveIteratorIterator::CHILD_FIRST
         );
 
-        $contents = collect(iterator_to_array($fileList));
-
-        $contents = $contents->reject(
-            /** Reject anything in our ignore list */
-            function ($fileInfo, $path) {
-                foreach (config('serverless.packaging.ignore') as $pattern) {
-                    // Try directory path matching first
-                    $result = strpos($fileInfo->getPathInfo(), $pattern);
-                    if ($result !== false) {
-                        return true;
-                    }
-                    // Then Try filename matching
-                    if ($fileInfo->getBasename() === basename($pattern)) {
-                        return true;
-                    }
+        return collect(iterator_to_array($fileList))->reject(
+                function (\SplFileInfo $fileInfo, string $path) {
+                    return $this->ignore($fileInfo, $path);
                 }
-                return false;
-            }
-        )->mapWithKeys(
-            function (\SplFileInfo $fileInfo, $path) use ($basePath) {
-                $key = ltrim(substr($path, strlen($basePath)), '/');
-
-                $perms = $fileInfo->isDir() ?
-                    FilePermissionCalculator::fromStringRepresentation('-rwxrwxrwx')->getDecimal() :
-                    FilePermissionCalculator::fromStringRepresentation('-r--r--r--')->getDecimal();
-
-                if (in_array($key, config('serverless.packaging.executables'))) {
-                    $perms = FilePermissionCalculator::fromStringRepresentation('-rwxrwxrwx')->getDecimal();
+                )->mapWithKeys(
+                function (\SplFileInfo $fileInfo, string $path) use ($basePath) {
+                    return $this->transform($fileInfo, $path, $basePath);
                 }
-                return [ $key =>
-                    collect([
-                        'path' => $fileInfo->getRealPath(),
-                        'permissions' => $perms
-                    ])
-                ];
-            }
-        );
-
-
-        return $contents;
+                );
     }
 
     /**
+     * Transforms the iterator list into something usable for Archiving
+     * @param \SplFileInfo $fileInfo
+     * @param string $path
+     *
+     * @return array
+     */
+    protected function transform(\SplFileInfo $fileInfo, string $path, string $basePath): array
+    {
+        $key = ltrim(substr($path, strlen($basePath)), '/');
+
+        /** The $key will be path inside the archive from the archive root. */
+        return [ $key =>
+                     collect([
+                         'path' => $fileInfo->getRealPath(),
+                         'permissions' => $this->getPermissions($fileInfo, $key)
+                     ])
+        ];
+    }
+
+    /**
+     * Determins whether to ignore the file or path
+     *
+     * @param \SplFileInfo $fileInfo
+     * @param string $path
+     *
+     * @return bool
+     */
+    protected function ignore(\SplFileInfo $fileInfo, string $path): bool
+    {
+        foreach (config('serverless.packaging.ignore') as $pattern) {
+            if (strpos($fileInfo->getPathInfo(), $pattern) !== false ||
+                $fileInfo->getBasename() === basename($pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param \SplFileInfo $fileInfo
+     * @param $key
+     *
+     * @return int
+     */
+    protected function getPermissions(\SplFileInfo $fileInfo, $key): int
+    {
+        $perms = $fileInfo->isDir() ?
+            /** Directories get read/execute */
+            FilePermissionCalculator::fromStringRepresentation('-r-xr-xr-x')->getDecimal() :
+            /** Every file defaults to read only (you can't write to the lambda package dir structure) */
+            FilePermissionCalculator::fromStringRepresentation('-r--r--r--')->getDecimal();
+
+        /** If it is a configured Executable though, let us make it 555 as well.  */
+        if (in_array($key, config('serverless.packaging.executables'))) {
+            $perms = FilePermissionCalculator::fromStringRepresentation('-r-xr-xr-x')->getDecimal();
+        }
+
+        return $perms;
+    }
+
+
+    /**
+     * We create a temporary directory to deploy composer vendor libraries too w/out and development libraries
+     * We will deploy that.
      * @return array
      */
     protected function collectComposerLibraries(): Collection
     {
         $tmpDir = \tempDir('serverlessVendor', true);
         copy(base_path('composer.json'), sprintf('%s/composer.json', $tmpDir));
+
         $process = new Process(sprintf('%s install --no-dev', 'composer'));
         $process->setWorkingDirectory($tmpDir);
         $process->run();
@@ -114,6 +148,7 @@ class Package extends Command
     }
 
     /**
+     * Standardize the generation of the archive name.
      * @return string
      */
     protected function generateArchiveName(): string
@@ -126,12 +161,5 @@ class Package extends Command
         );
 
         return $archiveName;
-    }
-
-    protected function prepareDistDir(): void
-    {
-        if (! is_dir(base_path('resources/dist'))) {
-            mkdir(base_path('resources/dist'));
-        }
     }
 }
