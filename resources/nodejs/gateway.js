@@ -7,12 +7,12 @@ var path = require("path");
 exports.handler = function(event, context) {
     // Sets some sane defaults here so that this function doesn't fail
     // when it's not handling a HTTP request from API Gateway.
-    let requestMethod = event.httpMethod || 'GET';
-    let requestBody = event.body || '';
-    let serverName = event.headers ? event.headers.Host : '';
-    let requestUri = event.path || '';
-    let headers = {};
-    let queryParams = '';
+    var requestMethod = event.httpMethod || 'GET';
+    var requestBody = event.body || '';
+    var serverName = event.headers ? event.headers.Host : 'lambda_test.dev';
+    var requestUri = event.path || '';
+    var headers = {};
+    var queryParams = '';
 
     // Convert all headers passed by API Gateway into the correct format for PHP CGI.
     // This means converting a header such as "X-Test" into "HTTP_X-TEST".
@@ -25,16 +25,17 @@ exports.handler = function(event, context) {
 
     // Convert query parameters passed by API Gateway into the correct format for PHP CGI.
     if (event.queryStringParameters) {
-        let parameters = Object.keys(event.queryStringParameters).map(function(key) {
-            let obj = key + "=" + event.queryStringParameters[key];
+        var parameters = Object.keys(event.queryStringParameters).map(function(key) {
+            var obj = key + "=" + event.queryStringParameters[key];
             return obj;
         });
         queryParams = parameters.join("&");
     }
 
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
-    let scriptPath = path.resolve('../../public/index.php')
-    let php = spawn('php-cgi', ['-f', scriptPath], {
+    var scriptPath = path.resolve(__dirname + '/../../public/index.php')
+
+    var php = spawn('php-cgi', ['-f', scriptPath], {
         env: Object.assign({
             REDIRECT_STATUS: 200,
             REQUEST_METHOD: requestMethod,
@@ -51,8 +52,8 @@ exports.handler = function(event, context) {
         input: requestBody
     });
 
-    // When the process exists, we should have a complete HTTP response to send back to API Gateway.
-    let parsedResponse = parser.parseResponse(php.stdout.toString('utf-8'));
+    // When the process exists, we should have a compvare HTTP response to send back to API Gateway.
+    var parsedResponse = parser.parseResponse(php.stdout.toString('utf-8'));
 
     // Signals the end of the Lambda function, and passes the provided object back to API Gateway.
     context.succeed({
