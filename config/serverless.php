@@ -11,7 +11,7 @@ return [
             base_path('resources/lib/php'),
             base_path('resources/lib/pkgconfig'),
             base_path('resources/dist'),
-            // Files
+            // Files Names
             '.gitignore',
             '.env',
             '.env.example',
