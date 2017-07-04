@@ -1,9 +1,11 @@
 {
     "name": "stechstudio/laravel-aws-lambda",
-    "description": "",
-    "keywords": ["laravel", "lumen", "aws"],
+    "version": "0.0.1",
+    "description": "Allows php to respond to http requests on aws lambda",
+    "keywords": ["laravel", "lumen", "aws", "php", "lambda"],
     "homepage": "https://stechstudio.com/",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Bubba",
@@ -19,6 +21,7 @@
         "illuminate/support": "^5.4",
         "Illuminate/Console": "^5.4",
         "illuminate/filesystem": "^5.4",
+        "illuminate/http": "^5.4",
         "symfony/process": "^3.3",
         "Illuminate/Pipeline": "^5.4",
         "gisostallenberg/file-permission-calculator": "^1.0"
