@@ -47,7 +47,6 @@ class Install extends Command
         copy(sprintf('%s/bin/php-cgi', $tmpDir), base_path('resources/bin/php-cgi'));
         copyFolder(sprintf('%s/lib', $tmpDir), base_path('resources/lib'));
         copyFolder(__DIR__ . '/../../resources/nodejs', base_path('resources/nodejs'));
-        @unlink(base_path('resources/nodejs/.eslintrc'));
         @unlink(base_path('resources/nodejs/.gitignore'));
         @unlink(base_path('resources/nodejs/package.json'));
         @unlink(base_path('resources/nodejs/package-lock.json'));
