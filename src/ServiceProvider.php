@@ -18,7 +18,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Default path to configuration
@@ -40,6 +40,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $publishPath = base_path('config/serverless.php');
         }
         $this->publishes([$this->configPath => $publishPath], 'config');
+
+        if (is_a($this->app, 'Laravel\Lumen\Application')) {
+            include __DIR__ . '/routes/json.php';
+        } else {
+            $this->loadRoutesFrom(__DIR__ . '/routes/json.php');
+        }
     }
     /**
      * Register the service provider.
